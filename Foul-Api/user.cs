@@ -15,4 +15,5 @@
         public DateTime? resettokenexpires { get; set; }
         public string? SubscribedTeams { get; set; }
     }
+    
 }
