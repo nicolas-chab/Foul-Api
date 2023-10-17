@@ -5,15 +5,15 @@ namespace Foul_Api.Models
     public class refereeregisterrequest1
     {
         [Required]
-        public string Fullnamer { get; set; } = string.Empty;
+        public string Fullname { get; set; } = string.Empty;
       
         [Required,EmailAddress]
-        public string emailr { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
         [Required]
-        public string passwordr { get; set; } = string.Empty;
+        public string password { get; set; } = string.Empty;
         [Required,Compare("password")]
-        public string confirmpasswordr { get; set; } = string.Empty;
+        public string confirmpassword { get; set; } = string.Empty;
         [Required]
-        public int numerodelegajor { get; set; } 
+        public int numerodelegajo { get; set; } 
     }
 }

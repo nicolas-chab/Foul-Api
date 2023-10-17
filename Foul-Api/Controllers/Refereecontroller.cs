@@ -48,18 +48,18 @@ namespace Foul_Api.Controllers
             [HttpPost("registerreferee")]
             public async Task<IActionResult> CreateReferee(refereeregisterrequest1 request)
             {
-                if (db.referees.Any(r => r.email == request.emailr))
+                if (db.referees.Any(r => r.email == request.email))
                 {
                     return BadRequest("referee already exists");
 
                 }
-                createpasswordhash(request.passwordr, out byte[] passwordhash, out byte[] passwordsalt);
+                createpasswordhash(request.password, out byte[] passwordhash, out byte[] passwordsalt);
                 var referee = new Referee
                 {
-                    FirstAndLastName = request.Fullnamer,
-                    email = request.emailr,
-                    legajo= request.numerodelegajor,
-                    password = request.passwordr,
+                    FirstAndLastName = request.Fullname,
+                    email = request.email,
+                    legajo= request.numerodelegajo,
+                    password = request.password,
                     passwordhash = passwordhash,
                     passwordsalt = passwordsalt,
                     verificationtoken = createrandomtoken()
@@ -67,18 +67,18 @@ namespace Foul_Api.Controllers
                 db.referees.Add(referee);
                 await db.SaveChangesAsync();
 
-                return Ok("user successfully created");
+                return Ok("referee successfully created");
             }
 
-            [HttpPost("login")]
-            public async Task<IActionResult> Login(refereeregisterrequest request)
+            [HttpPost("login-referee")]
+            public async Task<IActionResult> Login(refereelogin request)
             {
-                var referee = await db.users.FirstOrDefaultAsync(r => r.email == request.email);
+                var referee = await db.referees.FirstOrDefaultAsync(r => r.email == request.email);
                 if (referee == null)
                 {
-                    return BadRequest("user not found");
+                    return BadRequest("referee not found");
                 }
-                if (!verifypasswordhash(request.password, user.passwordhash, user.passwordsalt))
+                if (!verifypasswordhash(request.password, referee.passwordhash, referee.passwordsalt))
                 {
                     return BadRequest("Password is incorrect");
                 }
@@ -87,50 +87,50 @@ namespace Foul_Api.Controllers
                     return BadRequest("not verified");
                 }
 
-                return Ok($"welcome back, {user.email}!");
+                return Ok($"welcome back, {referee.FirstAndLastName}!");
             }
-            [HttpPost("Verify")]
+            [HttpPost("Verify-referee")]
             public async Task<IActionResult> Verify(string token)
             {
-                var user = await db.users.FirstOrDefaultAsync(u => u.verificationtoken == token);
-                if (user == null)
+                var referee = await db.referees.FirstOrDefaultAsync(r => r.verificationtoken == token);
+                if (referee == null)
                 {
                     return BadRequest("invalid token");
                 }
-                user.verifiedat = DateTime.Now;
+                referee.verifiedat = DateTime.Now;
                 await db.SaveChangesAsync();
-                return Ok("user verified");
+                return Ok("referee verified");
             }
-            [HttpPost("forgot-password")]
-            public async Task<IActionResult> forgotpassword(string email)
+            [HttpPost("forgot-password-refere")]
+            public async Task<IActionResult> forgotpasswordreferee(string email)
             {
-                var user = await db.users.FirstOrDefaultAsync(u => u.email == email);
-                if (user == null)
+                var referee = await db.referees.FirstOrDefaultAsync(r => r.email == email);
+                if (referee == null)
                 {
-                    return BadRequest("user not found");
+                    return BadRequest("referee not found");
                 }
-                user.passwordresettoken = createrandomtoken();
-                user.resettokenexpires = DateTime.Now.AddDays(10);
+                referee.passwordresettoken = createrandomtoken();
+                referee.resettokenexpires = DateTime.Now.AddDays(10);
                 await db.SaveChangesAsync();
 
                 return Ok("you may now reset your password");
             }
-            [HttpPost("reset-password")]
-            public async Task<IActionResult> resetpassword(resetpasswordrequest request)
+            [HttpPost("reset-password-referee")]
+            public async Task<IActionResult> resetpasswordreferee(resetpasswordrequest request)
             {
-                var user = await db.users.FirstOrDefaultAsync(u => u.passwordresettoken == request.token);
-                if (user == null || user.resettokenexpires < DateTime.Now)
+                var referee = await db.referees.FirstOrDefaultAsync(r => r.passwordresettoken == request.token);
+                if (referee == null || referee.resettokenexpires < DateTime.Now)
                 {
                     return BadRequest("Invalid token.");
                 }
                 createpasswordhash(request.password, out byte[] passwordhash, out byte[] passwordsalt);
 
-                user.passwordhash = passwordhash;
-                user.passwordsalt = passwordsalt;
-                user.password = request.password;
-                user.passwordresettoken = null;
-                user.resettokenexpires = null;
-                db.referees.Update(Referee);
+                referee.passwordhash = passwordhash;
+                referee.passwordsalt = passwordsalt;
+                referee.password = request.password;
+                referee.passwordresettoken = null;
+                referee.resettokenexpires = null;
+                db.referees.Update(referee);
                 await db.SaveChangesAsync();
                 return Ok("password succesfully reset.");
             }
