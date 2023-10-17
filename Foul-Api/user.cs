@@ -13,7 +13,7 @@
         public DateTime? verifiedat { get; set; }
         public string? passwordresettoken { get; set; }
         public DateTime? resettokenexpires { get; set; }
-        public string? SubscribedTeams { get; set; }
+        public string? subscribedteams { get; set; }
     }
     
 }
