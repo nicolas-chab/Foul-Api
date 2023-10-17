@@ -42,7 +42,7 @@ namespace Foul_Api.Controllers
         }
         
         [HttpPost("register")] 
-        public async Task<IActionResult> Createuser(userregisterequest request) 
+        public async Task<IActionResult> Createuser(refereeregisterrequest request) 
         {
             if (db.users.Any(u => u.email == request.email))
             {
@@ -52,8 +52,7 @@ namespace Foul_Api.Controllers
             createpasswordhash(request.password, out byte[] passwordhash, out byte[] passwordsalt);
             var user = new user
             {
-                firstname = request.firstname,
-                lastname = request.lastname,
+                Fullname = request.Fullname,
                 email = request.email,
                 password=request.password,
                 passwordhash = passwordhash,

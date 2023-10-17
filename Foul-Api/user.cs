@@ -3,10 +3,9 @@
     public class user
     {
         public int id {  get; set; } 
-        public string firstname { get; set; } = string.Empty;
-        public string lastname { get; set; } = string.Empty;
         public string email { get; set; } = string.Empty;
         public string password { get; set; } = string.Empty;
+        public string Fullname { get; set; } = string.Empty;
         public byte[] passwordhash { get; set; } = new byte[32];
         public byte[] passwordsalt { get; set; } = new byte[32];
         public string? verificationtoken { get; set; }
